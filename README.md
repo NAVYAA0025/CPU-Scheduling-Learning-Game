@@ -26,27 +26,35 @@ Clone the repository and run:
 
 ```bash
 python server.py
+```
 or:
+```
 py server.py
+```
 Then open:
+```
 http://127.0.0.1:8000
 ```
 ### Linux / macOS
 
 Clone the repository and run:
-
+```
 ./start-local.sh
+```
 Then open:
+```
 http://127.0.0.1:8000
-
+```
 Custom Port
 
 You can run the server on a different port:
+```
 python server.py --port 8080
-
+```
 Then open:
+```
 http://127.0.0.1:8080
-
+```
 ## Scheduling Model
 
 This is a deterministic teaching model for one CPU and whole-number time units:
