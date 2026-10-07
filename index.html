@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1033">
+  <meta name="description" content="A cozy, offline learning game for CPU scheduling. Ride the night train through five scheduling algorithms.">
+  <title>Disk Duel — Night Shift Academy</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="preload" href="assets/fonts/nunito-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="sky" aria-hidden="true"><canvas id="sky"></canvas><span class="moon"></span><span class="cloud cloud-a"></span><span class="cloud cloud-b"></span><svg class="hills" viewBox="0 0 1440 220" preserveAspectRatio="none"><path d="M0 120C160 60 280 70 420 110S700 170 860 120 1160 40 1300 80l140 30v110H0z" fill="#171c52"/><path d="M0 170C200 120 360 150 520 170S860 210 1040 160 1300 120 1440 160v60H0z" fill="#0c1033"/></svg></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="Disk Duel home">
+      <img class="brand-mark" src="assets/mascot/face-happy.png" alt=""><span><strong>Disk Duel</strong><small>Night Shift Academy</small></span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <button class="nav-link" data-view="notes">Guide</button>
+      <button class="nav-link active" data-view="journey">Journey</button>
+      <button class="nav-link" data-view="lab">Lab</button>
+    </nav>
+    <div class="header-score" aria-live="polite"><span aria-hidden="true">✦</span><b id="header-score">0</b><small>points</small></div>
+  </header>
+
+  <main id="app" class="app-shell">
+    <section id="view-journey" class="view" aria-labelledby="welcome-title">
+      <section class="hero">
+        <div class="hero-copy">
+          <h1 id="welcome-title">Disk Duel</h1>
+          <p class="hero-description">All aboard the night train! Learn CPU scheduling, one stop at a time.</p>
+          <div class="hero-actions"><button class="button button-primary button-big" id="continue-journey">Play</button><button class="button button-quiet" data-open-view="lab">Lab</button></div>
+        </div>
+        <div class="hero-art" aria-hidden="true"><img src="assets/mascot/teach.png" alt="" class="owl-hero"></div>
+      </section>
+
+      <section class="journey-section" aria-labelledby="journey-title">
+        <div class="map-bar"><h2 id="journey-title">Choose a stop</h2><span id="progress-label">0 / 6 cleared</span><span class="progress-track"><span id="overall-progress"></span></span><button id="export-progress" class="text-button">Save progress</button></div>
+        <div class="map" id="map">
+          <svg class="map-svg" viewBox="0 0 640 1000" aria-hidden="true"><g id="track-segs"></g></svg>
+          <div id="station-list" class="station-list"></div>
+          <div class="train" id="train-car" aria-hidden="true"><div class="train-art" data-train></div><img class="train-owl" src="assets/mascot/face-happy.png" alt=""><i class="puff"></i><i class="puff"></i><i class="puff"></i></div>
+        </div>
+      </section>
+    </section>
+
+    <section id="view-lesson" class="view" aria-labelledby="lesson-title">
+      <div class="view-head"><button class="back-button" data-open-view="journey">← Journey</button><div class="level-pill" id="lesson-level-pill">STATION 1 OF 6</div></div>
+      <div class="lesson-layout">
+        <div class="lesson-main">
+          <div class="panel lesson-intro"><p class="eyebrow" id="lesson-algorithm-label">THE FIRST STOP</p><h1 id="lesson-title">First Come, First Served</h1><p id="lesson-lede" class="lesson-lede"></p><div class="rule-box"><span class="rule-icon">✦</span><div><small>THE RULE TO REMEMBER</small><b id="lesson-rule"></b></div></div></div>
+          <div class="panel video-panel">
+            <div class="video-heading"><img class="sec-owl" src="assets/mascot/read.png" alt=""><div><p class="eyebrow">LECTURE</p><h2>Watch the lesson</h2></div></div>
+            <div class="video-frame" id="video-frame"><video id="lecture-video" controls preload="metadata" playsinline></video><div class="video-empty" id="video-empty"><span class="video-moon">☾</span><b>No lecture video</b><small>Place the matching file in <code>lectures/</code>.</small></div></div>
+          </div>
+          <section class="panel extra-tip-panel" id="extra-tip-panel" hidden>
+            <div class="video-heading"><img class="sec-owl" src="assets/mascot/wink.png" alt=""><div><p class="eyebrow">EXTRA TIP</p><h2>Watch the bonus</h2></div></div>
+            <div class="video-frame extra-tip-frame" id="extra-tip-frame"><video id="extra-tip-video" controls preload="metadata" playsinline></video><div class="video-empty" id="extra-tip-empty"><span class="video-moon">✦</span><b>Bonus video missing</b><small>Place the matching file in <code>lectures/</code>.</small></div></div>
+          </section>
+          <div class="panel memory-panel"><div class="memory-heading"><img class="sec-owl" src="assets/mascot/wink.png" alt=""><div><p class="eyebrow">LESSON</p><h2>How it works</h2></div></div><p id="lesson-explanation"></p><div class="memory-points" id="lesson-points"></div></div>
+          <div class="lesson-cta panel"><b>Ready?</b><button class="button button-primary" id="start-quiz">Quick quiz <span aria-hidden="true">→</span></button></div>
+        </div>
+      <aside class="lesson-aside"><div class="panel mascot-note"><img src="assets/mascot/teach.png" alt="The owl teacher"/><p class="eyebrow">OWL TIP</p><p id="owl-tip"></p></div></aside>
+      </div>
+    </section>
+
+    <section id="view-quiz" class="view" aria-labelledby="quiz-title">
+      <div class="view-head"><button class="back-button" id="quit-quiz">← Lesson</button><div id="quiz-progress-label" class="level-pill">QUESTION 1 OF 3</div></div>
+      <div class="quiz-layout"><div class="panel quiz-card" id="quiz-card"><div class="quiz-topline"><p class="eyebrow" id="quiz-topic">PRACTICE STOP</p><span id="quiz-score-live" class="quiz-mini-score">✦ 0 points</span></div><div class="quiz-meter"><span id="quiz-meter-fill"></span></div><h1 id="quiz-title">Choose one</h1><p id="quiz-context" class="quiz-context"></p><h2 id="question-text" class="question-text"></h2><div id="answer-options" class="answer-options" role="group" aria-label="Answer choices"></div><div id="answer-feedback" class="answer-feedback" aria-live="polite" hidden></div><div class="quiz-controls"><span id="quiz-count-hint">Pick one answer.</span><button id="quiz-next" class="button button-primary" disabled>Check answer</button></div></div><aside class="panel quiz-owl"><div class="owl-halo"><img src="assets/mascot/face-hint.png" alt="" /></div><p class="eyebrow">HINT</p><p id="quiz-side-tip">You can change your mind before checking.</p></aside></div>
+      <div id="quiz-result" class="panel quiz-result" hidden></div>
+    </section>
+
+    <section id="view-lab" class="view" aria-labelledby="lab-title">
+      <div class="view-head"><button class="back-button" data-open-view="journey">← Journey</button><div class="level-pill">THE PRACTICE DEPOT</div></div>
+      <div class="lab-intro"><div><p class="eyebrow">TRY YOUR OWN JOBS</p><h1 id="lab-title">Scheduling lab</h1><p>Build a workload, pick a scheduler, and compare results.</p></div><div class="lab-owl"><img src="assets/mascot/laptop.png" alt="Owl at a laptop"/></div></div>
+      <div class="lab-layout"><div class="panel workload-panel"><div class="panel-title-row"><div><p class="eyebrow">1 · BUILD A WORKLOAD</p><h2>Processes on the platform</h2></div><button class="text-button" id="reset-workload">Use sample jobs</button></div><div class="table-scroll"><table class="process-table"><thead><tr><th scope="col">Process</th><th scope="col">Arrives</th><th scope="col">CPU time</th><th scope="col">Priority*</th><th scope="col"><span class="sr-only">Remove</span></th></tr></thead><tbody id="process-rows"></tbody></table></div><button class="button button-outline button-small" id="add-process">+ Add a process</button><p class="table-note">* Smaller priority number = higher priority in this game. Ties follow arrival order, then row order.</p><div id="workload-error" class="field-error" aria-live="polite"></div></div>
+        <div class="panel algorithm-panel"><p class="eyebrow">2 · PICK THE SCHEDULER</p><label for="algorithm-select">Scheduling algorithm</label><select id="algorithm-select"></select><div class="quantum-control" id="quantum-control"><label for="quantum-input">Round Robin time quantum</label><div class="quantum-row"><input id="quantum-input" type="number" min="1" step="1" value="2"><span>time units per turn</span></div></div><button class="button button-primary run-button" id="run-simulation">Run the train <span aria-hidden="true">→</span></button><div class="lab-explainer" id="algorithm-explainer"></div></div></div>
+      <div id="simulation-results" class="simulation-results" hidden><div class="panel result-head"><div><p class="eyebrow">RESULT</p><h2 id="result-title">Your schedule</h2></div><button id="compare-all" class="button button-outline button-small">Compare five</button></div><div id="single-result" class="panel gantt-panel"></div><div id="comparison-results" class="panel comparison-panel" hidden></div><p class="careful-note">Lowest average waiting time does not make one scheduler best for every workload.</p></div>
+    </section>
+
+    <section id="view-notes" class="view active" aria-labelledby="notes-title">
+      <div class="view-head"><button class="back-button" data-open-view="journey">← Journey</button><div class="level-pill">OWL'S QUICK GUIDE</div></div>
+      <div class="notes-intro panel"><div><p class="eyebrow">FIVE RULES, ONE PAGE</p><h1 id="notes-title">A little map for the night</h1><p>These are the simplified rules used by Disk Duel's lessons and simulator.</p></div><img class="notes-owl" src="assets/mascot/board.png" alt=""></div>
+      <div class="algorithm-notes" id="algorithm-notes"></div>
+      <div class="panel terminology"><p class="eyebrow">USEFUL TERMS</p><div class="term-grid"><div><b>Arrival time (AT)</b><p>When a process becomes ready to use the CPU.</p></div><div><b>Burst time (BT)</b><p>How much CPU time the process needs in total.</p></div><div><b>Completion time (CT)</b><p>The time when the process has finished.</p></div><div><b>Turnaround (TAT)</b><p>CT − AT: time from arrival until finish.</p></div><div><b>Waiting time (WT)</b><p>TAT − BT: time spent ready but not running.</p></div><div><b>Preemption</b><p>Pausing one running process so another can use the CPU.</p></div></div></div>
+    </section>
+
+    <section id="view-level6" class="view" aria-labelledby="level6-title">
+      <div class="view-head"><button class="back-button" data-open-view="journey">← Journey</button><div class="level-pill">FINAL DESTINATION · ALGORITHM CHOICE</div></div>
+      <div class="level6-intro panel"><div><p class="eyebrow">THE DESTINATION</p><h1 id="level6-title">Choose the scheduler that fits the workload</h1><p>Arrive at the final decision by matching the workload’s main goal to the right algorithm.</p></div><img src="assets/mascot/board.png" alt="The owl guide"></div>
+      <section class="panel level6-tip-panel" aria-labelledby="level6-tip-title"><p class="eyebrow">BEFORE YOU CHOOSE</p><h2 id="level6-tip-title">Choose by workload shape</h2><div class="choice-guide" id="choice-guide"></div></section>
+    </section>
+  </main>
+  <div id="screen-loader" class="screen-loader" role="status" aria-live="polite"><div class="loader-card"><img class="loader-owl" src="assets/mascot/cheer.png" alt=""/><p class="loader-logo">Disk Duel</p><strong id="loader-title">Waking up the night train…</strong><span class="loader-track"><span></span><i class="mini-train" data-train></i></span><small id="loader-tip"></small></div></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div class="buddy" id="buddy" data-h="l" aria-hidden="true"><div class="bubble" id="buddy-bubble"></div><img id="buddy-img" src="assets/mascot/teach.png" alt=""><i class="buddy-shadow"></i></div>
+  <script src="fx.js" defer></script>
+  <script src="game.js" defer></script>
+</body>
+</html>
