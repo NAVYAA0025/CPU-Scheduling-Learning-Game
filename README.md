@@ -1,8 +1,8 @@
 # Disk Duel
 
-A cozy, self-hosted learning game about five CPU scheduling algorithms and a final algorithm-selection quiz. It uses plain HTML, CSS, JavaScript, and Python's standard library—no package installs, CDNs, accounts, or internet connection required.
+Disk Duel is an interactive educational game for learning CPU scheduling algorithms through lessons, quizzes, simulations, and visual performance comparisons. It uses plain HTML, CSS, JavaScript, and Python's standard library—no package installs, CDNs, accounts, or internet connection required.
 
-## What's in the game
+## Features
 
 - **Six stations:** FCFS, SJF, SRTF, Priority, Round Robin, and an algorithm-choice quiz-only station.
 - **Short lessons** with a rule, a brief explanation, and an automatically loaded local lecture-video slot.
@@ -12,7 +12,42 @@ A cozy, self-hosted learning game about five CPU scheduling algorithms and a fin
 - **Quick guide** for the rules and scheduling terms; a progress JSON export is available from the map.
 - **Offline behavior:** there are no third-party scripts, styles, fonts, or network services. Quiz progress is stored in local browser storage.
 
-## Simulator rules
+## How to Run
+
+### Requirements
+
+- Python 3.8 or newer
+- A modern web browser
+- No additional Python packages are required.
+
+### Windows
+
+Clone the repository and run:
+
+```bash
+python server.py
+or:
+py server.py
+Then open:
+http://127.0.0.1:8000
+```
+### Linux / macOS
+
+Clone the repository and run:
+
+./start-local.sh
+Then open:
+http://127.0.0.1:8000
+
+Custom Port
+
+You can run the server on a different port:
+python server.py --port 8080
+
+Then open:
+http://127.0.0.1:8080
+
+## Scheduling Model
 
 This is a deterministic teaching model for one CPU and whole-number time units:
 
